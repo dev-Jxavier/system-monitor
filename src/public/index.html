@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Infos</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="icon" href="./favicon.ico">
+    <link rel="manifest" href="./site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lekton:wght@700&family=Roboto:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --primary-color: #3d405b;
+            --secondary-color: #e07a5f;
+        }
+
+        *{
+            font-family: 'Lekton', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        body{
+            height: 100vh;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #container{
+            padding: 24px;
+            width: 50vw;
+            height: 50vh;
+            border-radius: 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 700;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 2fr 2fr;
+        }
+
+        #container-timer, #container-ram{
+            background-color: var(--primary-color);
+        }
+
+        #title-ram, #container-timer, #container-ram, #title-timer{
+            padding: 24px;
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        #container-timer h2, #container-ram h2{
+            margin-bottom: 8px;
+        }
+
+        #timer, #freeRam, #usagedRam, #totalRam{
+            font-size: 2rem;
+        }
+
+        #title-monitor{
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 32px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title-monitor">System Monitor 🖥️</h1>
+    <div id="container">
+        <div id="title-ram">
+            <h1>Stats Ram</h1>
+        </div>
+        <div id="container-ram">
+            <p id="freeRam">...</p>
+            <p id="usagedRam">...</p>
+            <p id="totalRam">...</p>
+        </div>
+        <div id="container-timer">
+            <p id="timer">...</p>
+        </div>
+        <div id="title-timer">
+            <h1>Timer</h1>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('infoSystem', (infos) => {
+
+            const freeRam = document.getElementById('freeRam');
+            const usagedRam = document.getElementById('usagedRam');
+            const totalRam = document.getElementById('totalRam');
+            const timer = document.getElementById('timer');
+
+            const days = infos.uptime.days;
+            const hours = infos.uptime.hours;
+            const minutes = infos.uptime.minutes;
+            const seconds = infos.uptime.seconds;
+
+            freeRam.textContent = `Total ${infos.totalmem}mb`;
+            usagedRam.textContent = `Used ${infos.usaged}mb`;
+            timer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            totalRam.textContent = `Free ${infos.freemem}mb`;
+            
+        });
+    </script>
+</body>
+</html>
